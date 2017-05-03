@@ -2,6 +2,8 @@ library(rbokeh)
 library(preference)
 library(ggplot2)
 
+source("util.r")
+
 parse_sequence_text = function(x) {
   suppressWarnings({ret = as.numeric(x)})
   if (is.na(ret)) {
@@ -44,18 +46,8 @@ server <- shinyServer(function(input, output, session) {
 
   get_strat_selection = reactive({ 
     params = get_inputs()
-    df = data.frame(
-      list(delta_pi=rep(params$delta_pi, each=length(params$delta_nu)),
-           delta_nu=rep(params$delta_nu, times=length(params$delta_pi))))
-    ss = rep(NA, nrow(df))
-    for (i in 1:nrow(df)) {
-      ss[i] = 
-        ceiling(n_sel(params$power, params$phi, params$sigma2, 
-                                df$delta_pi[i], df$delta_nu[i], params$alpha, 
-                                params$theta, params$xi, params$num_strata))
-    }
-    df$sample_size = ss
-    df
+    ret = preference:::create_strat_selection_df(params)
+    ret
   })
 
   output$sample_size = renderDataTable({
@@ -67,27 +59,34 @@ server <- shinyServer(function(input, output, session) {
   output$line_graph = renderPlot({
     params = get_inputs()
     df = get_strat_selection()
-    ret = NULL
-    if (length(unique(df$delta_pi)) > 1 && length(unique(df$delta_nu)) == 1) {
-      ret = ggplot(data=df, aes(x=delta_pi, y=sample_size)) +
-        geom_line() + xlab("Preference Effect") + ylab("Sample Size")
-    }
-    else if (length(unique(df$delta_pi)) == 1 && 
-             length(unique(df$delta_nu)) > 1) {
-      ret = ggplot(data=df, aes(x=delta_nu, y=sample_size)) +
-        geom_line() + xlab("Selection Effect") + ylab("Sample Size")
-    }
-    else if (length(unique(df$delta_pi)) > 1 && 
-             length(unique(df$delta_nu)) > 1) {
-      uss = length(unique(df$sample_size))
-      ret = ggplot(data=df, aes(x=delta_pi, y=delta_nu, fill=factor(sample_size))) +
-        geom_tile() + xlab("Preference Effect") + ylab("Selection Effect") +
-        scale_fill_manual(values=rev(heat.colors(uss)), 
-          guide=guide_legend(title="Sample Size"))
-        #scale_fill_continuous(guide=guide_legend(title = "Sample Size")) 
-    }
+    ret = preference:::create_strat_selection_plot(params, df) 
     ret
   })
+
+  output$downloadData = downloadHandler(
+    filename = function() {
+      paste("stratified-selection-report", "zip", sep=".")
+    },
+    content = function(fname) {
+      doc_template = readLines("ssc.rmd")
+      current_wd = getwd()
+      tmpdir = tempdir()
+      setwd(tempdir())
+      params = get_inputs()
+      df = preference:::create_strat_selection_df(params)
+      df_path = "stratified-selection-sample-size.csv"
+      write.csv(df, df_path)
+      report_dest = "stratified-selection-sample-report.docx"
+      rmd_content = create_strat_selection_report(doc_template, params, df_path)
+      tf = paste0(tempfile(), ".rmd")
+      writeLines(rmd_content, tf)
+      render(tf, output_file=report_dest)
+      ret = zip(zipfile=fname, files=c(df_path, report_dest))
+      setwd(current_wd)
+      ret
+    },
+    contentType = "application/zip"
+  )
 
 })
 
