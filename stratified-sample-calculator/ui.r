@@ -6,7 +6,7 @@ library(ggplot2)
 ui <- shinyUI(pageWithSidebar(
   
   # Application title
-  headerPanel("Stratified Selection Sample-Size Calculator"),
+  headerPanel("Selection Sample-Size Calculator"),
 
   # Need to add tooltips for descriptions of inputs.
 
