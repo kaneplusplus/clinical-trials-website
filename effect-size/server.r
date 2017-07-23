@@ -49,7 +49,7 @@ server <- shinyServer(function(input, output, session) {
       foreach(m11=params$mu11, .combine=rbind) %:% 
       foreach(m22=params$mu22, .combine=rbind) %:% 
       foreach(p=params$phi, .combine=rbind) %do% {
-        effects = calc_effects(m1, m2, m11, m22, p)
+        effects = effects_from_means(m1, m2, m11, m22, p)
         c(m1, m2, m11, m22, p, effects$delta_tau, effects$delta_nu, 
         effects$delta_pi)
       }
