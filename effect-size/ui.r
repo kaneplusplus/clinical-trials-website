@@ -7,7 +7,7 @@ library(trelliscopejs)
 ui <- shinyUI(pageWithSidebar(
   
   # Application title
-  headerPanel("Stratified Selection Sample-Size Calculator"),
+  headerPanel("Effect Size Calculator"),
 
   # Need to add tooltips for descriptions of inputs.
 
