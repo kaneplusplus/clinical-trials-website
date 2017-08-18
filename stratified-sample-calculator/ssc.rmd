@@ -1,0 +1,33 @@
+---
+title: "Stratified Sample Size Calculator Report"
+output: word_document
+---
+
+# User-Input Parameters
+
+```{r}
+num_strata=NSTRATA
+power=POWER
+alpha=ALPHA
+theta=THETA
+delta_pi=DELTA_PI
+delta_nu=DELTA_NU
+phi=PHI
+sigma2=SIGMA2
+xi=XI
+```
+
+# Sample Size Visualization
+
+```{r, echo=FALSE}
+library(preference)
+library(ggplot2)
+path_to_df=PATH_TO_DF
+df = read.csv(path_to_df)
+params = list(power=power, alpha=alpha, theta=theta, delta_pi=delta_pi,
+              delta_nu=delta_nu, phi=phi, sigma2=sigma2,
+              xi=xi, num_strata=num_strata)
+df = preference:::create_strat_selection_df(params)
+preference:::create_strat_selection_plot(params, df)
+```
+
