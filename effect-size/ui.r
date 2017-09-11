@@ -19,18 +19,23 @@ ui <- shinyUI(pageWithSidebar(
       value="2 to 10"),
     textInput("mu2", "Random Arm Treatment 2 Mean Response:", 
       value="2"),
-    textInput("mu11", "Preference Arm Treatment 1 Mean Response:", 
+    textInput("mu11", "Choice Arm Treatment 1 Mean Response:", 
       value="2"),
-    textInput("mu22", "Preference Arm Treatment 2 Mean Response:", 
+    textInput("mu22", "Choice Arm Treatment 2 Mean Response:", 
       value="2"),
     textInput("phi", "Proportion of Patients Preferring Treatment 1:",
       value="0.4 to 0.6 by 0.1"),
-    textInput("vary_param", "Parameter to vary over", value="mu1")
+    bsTooltip("mu1", "The mean response of the patients receiving treatment 1 in the random arm"),
+    bsTooltip("mu2", "The mean response of the patients receiving treatment 2 in the random arm"),
+    bsTooltip("mu11", "The mean response of the patients receiving treatment 1 in the choice arm"),
+    bsTooltip("mu22", "The mean response of the patients receiving treatment 2 in the choice arm."),
+    bsTooltip("phi", "The proportion of patients preferring treatment 1."),
+    downloadButton('downloadData', 'Download')
   ),
       
   # Show a plot of the generated distribution
   mainPanel(
-    trelliscopeOutput("effect_viz"),
+    #trelliscopeOutput("effect_viz"),
     dataTableOutput("effect_size")
   )
 

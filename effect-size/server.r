@@ -3,7 +3,8 @@ library(preference)
 library(ggplot2)
 library(foreach)
 library(tidyverse)
-library(trelliscopejs)
+source("util.r")
+#library(trelliscopejs)
 
 parse_sequence_text = function(x) {
   suppressWarnings({ret = as.numeric(x)})
@@ -37,8 +38,7 @@ server <- shinyServer(function(input, output, session) {
     mu11 = parse_sequence_text(input$mu11)
     mu22 = parse_sequence_text(input$mu22)
     phi = parse_sequence_text(input$phi)
-    vary_param = input$vary_param
-    list(mu1=mu1, mu2=mu2, mu11=mu11, mu22=mu22, phi=phi, vary_param=vary_param)
+    list(mu1=mu1, mu2=mu2, mu11=mu11, mu22=mu22, phi=phi)
   })
 
   get_effects = reactive({ 
@@ -50,36 +50,76 @@ server <- shinyServer(function(input, output, session) {
       foreach(m22=params$mu22, .combine=rbind) %:% 
       foreach(p=params$phi, .combine=rbind) %do% {
         effects = effects_from_means(m1, m2, m11, m22, p)
-        c(m1, m2, m11, m22, p, effects$delta_tau, effects$delta_nu, 
-        effects$delta_pi)
+        c(m1, m2, m11, m22, p, round(effects$treatment, 2), 
+          round(effects$selection, 2), round(effects$preference, 2))
       }
     ret = as.data.frame(ret)
-    colnames(ret) = c("mu1", "mu2", "mu11", "mu22", "phi", "delta_tau",
-      "delta_nu", "delta_pi")
+    colnames(ret) = c("mu1", "mu2", "mu11", "mu22", "phi", "treatment",
+      "selection", "preference")
     ret
   })
 
-  output$sample_size = renderDataTable({
+  output$effect_size <-  renderDataTable({
     get_effects()
   })
 
-  output$effect_viz = renderTrelliscope({
-    my_viz = function(xs, symbol, removes) {
-      xs %>% gather(Effect, Value, delta_tau:delta_pi) %>% 
-        ggplot(aes_string(x=symbol, y="Value")) + 
-          geom_line() + facet_grid(Effect ~ .)
+  output$downloadData <- downloadHandler(
+    filename=function() {
+      paste("effect-size-report", "zip", sep=".")
+    },
+    content=function(fname) {
+      doc_template = readLines("effect-size-template.rmd")
+      current_wd = getwd()
+      tmpdir = tempdir() 
+      setwd(tempdir())
+      params = get_inputs()
+      table_dest <- "effect-sizes.csv"
+      report_dest <- "effect-size-report.docx"
+      rmd_content <- create_effect_size_report(doc_template, params)
+      tf <- paste0(tempfile(), ".rmd")
+      writeLines(rmd_content, tf)
+      # Create the document from Rmarkdown 
+      render(tf, output_file=report_dest)
 
-    }
-    vary_param = get_inputs()$vary_param
-    x = get_effects()
-    
-    group_by_names = colnames(x)[(1:5)[-which(colnames(x) == vary_param)]]
-    group_by_symbols = lapply(group_by_names, as.symbol)
-    xn = x %>% group_by_(.dots=group_by_symbols) %>% nest %>% 
-      mutate(effect_viz= map(data, 
-        function(x) my_viz(x, vary_param, group_by_names))) %>%
-      trelliscope(name="Effect Sizes", nrow=1, ncol=2, panel_col="effect_viz")
-  })
+      # Create the effect size table and dump it to csv.
+      effect_size_table <- foreach(m1=mu1, .combine=rbind) %:%
+        foreach(m2=mu2, .combine=rbind) %:%
+        foreach(m11=mu11, .combine=rbind) %:%
+        foreach(m22=mu22, .combine=rbind) %:%
+        foreach(p=phi, .combine=rbind) %do% {
+          effects <- effects_from_means(m1, m2, m11, m22, p)
+          c(m1, m2, m11, m22, p, round(effects$treatment, 2),
+            round(effects$selection, 2), round(effects$preference, 2))
+        }
+      effect_size_table <- as.data.frame(effect_size_table)
+      colnames(effect_size_table) <- c("mu1", "mu2", "mu11", "mu22", "phi",
+        "treatment", "selection", "preference")
+      write.csv(effect_size_table, table_dest, row.names=FALSE)
+
+      ret = zip(zipfile=fname, files=c(report_dest, table_dest))
+      setwd(current_wd)
+      ret
+    },
+    contentType="application/zip"
+  )
+
+#  output$effect_viz = renderTrelliscope({
+#    my_viz = function(xs, symbol, removes) {
+#      xs %>% gather(Effect, Value, delta_tau:delta_pi) %>% 
+#        ggplot(aes_string(x=symbol, y="Value")) + 
+#          geom_line() + facet_grid(Effect ~ .)
+#
+#    }
+#    vary_param = get_inputs()$vary_param
+#    x = get_effects()
+#    
+#    group_by_names = colnames(x)[(1:5)[-which(colnames(x) == vary_param)]]
+#    group_by_symbols = lapply(group_by_names, as.symbol)
+#    xn = x %>% group_by_(.dots=group_by_symbols) %>% nest %>% 
+#      mutate(effect_viz= map(data, 
+#        function(x) my_viz(x, vary_param, group_by_names))) %>%
+#      trelliscope(name="Effect Sizes", nrow=1, ncol=2, panel_col="effect_viz")
+#  })
 
 })
 
