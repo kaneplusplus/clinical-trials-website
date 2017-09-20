@@ -1,0 +1,16 @@
+---
+title: "References"
+runtime: shiny
+output: 
+  html_document:
+    toc: true
+---
+
+
+1. Rucker G. A two-stage trial design for testing treatment, self-selection and treatment preference effects. Statistics in Medicine 8:477-485 (1989).
+2.  Cameron B, Esserman DA. Sample size and power for a stratified doubly randomized preference design. _Statistical Methods in Medical Research_ Nov 21. pii: 0962280216677573. [Epub ahead of print] (2016).
+3.  McCaffery KJ, Turner R, Macaskill P, Walter SD, Chan SF, Irwig L. Determining the impact of informed choice: separating treatment effects from the effects of choice and selection in randomized trials. _Medical Decision Making_ 31(2): 229-236 (2011).
+4.  Walter SD, Turner RM, Macaskill P, McCaffery KJ, Irwig L. Optimal allocation of participants for the estimation of selection, preference, and treatment effects in the two-stage randomized trial design. _Statistics in Medicine_ 31(13) 1307-22 (2012).
+5.  Turner RM, Walter SD, Macaskill P, McCaffery KJ, Irwig L. Sample size and power when designing and randomized trial for the estimation of treatment, selection and preference effects. _Medical Decision Making_ 34(6) 711-9 (2014).
+
+

@@ -1,0 +1,14 @@
+---
+title: "Yale-PCORI Clinical Trial Stratified Preference Design"
+runtime: shiny
+output: 
+  html_document:
+    toc: true
+---
+
+<center>
+![](strat-figure1.png) 
+
+Figure 1: The Stratified Design
+</center>
+

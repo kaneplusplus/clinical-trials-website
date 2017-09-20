@@ -1,0 +1,32 @@
+---
+title: "Yale-PCORI Clinical Trial Preference Methods"
+runtime: shiny
+output: 
+  html_document:
+    toc: true
+---
+
+The following table presents a description and constraints for each of the parameters.
+Note that setting the number of strata to one is equivalent to an unstratified design [[1,5](../references/)]
+
+<center>
+Parameter | Description | Parameter Constraints
+----------|-------------------------------- | ------------------
+$N$ | Total samples in the trial | Should be greater than 0 
+$s$ | Number of strata | $s > 0$
+$\xi_i$ | Proportion of individuals in strata $i$ | $\sum_{i=1}^s \xi_i = 1$
+$n$ | Individuals in the random arm | $n \leq N$
+$m$ | Individuals in the choice arm | $m + n = N$
+$\Theta$ | Proportion sample size distributed to the choice arm[4] | $\Theta N=m$, $(1-\Theta)N=n$
+$n_i$ | Individuals in the $i$th random-arm strata | $\sum_{i=1}^s n_i = n$
+$m_i$ | Individuals in the $i$th choice-arm strata | $\sum_{i=1}^s m_i = m$
+$\phi_i$ | The preference rate of treatment 1 in stratum $i$ | $m_i / m$ 
+$m_{ij}$ | Choice arm individuals receiving treatment $j$ in stratum $i$ | $\sum_j m_{ij} = m_i$
+$n_{ij}$ | Random arm individuals assinged treatment $j$ in stratum $i$ | $\sum_j n_{ij} = n_i$
+$\mu_{jji}$ | Choice arm mean outcome for treatment $j$ in stratum $i$ | 
+$\sigma^2_{jji}$ | Choice arm oucome variance for treatment $j$ in stratum $i$ | 
+$\mu_{ji}$ | Random arm mean outcome for treatment $j$ in stratum $i$ | 
+$\sigma^2_{ji}$ | Random arm oucome variance for treatment $j$ in stratum $i$ | 
+</center>
+
+
