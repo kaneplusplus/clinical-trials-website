@@ -16,11 +16,54 @@ Suppose an investigator is interested in conducting a clinical trial to assess t
 Figure 1: The two-stage clinical trial design 
 </center>
 
+# Designing a Trial
+
+In order to design a two-stage clinical trial, you will need to answer a few important questions:
+
+1.	What is the most important effect of interest?  Is it the treatment effect, the preference effect or the selection effect?
+
+<div style="margin-left: 2em;">
+Most often we are going to be interested in either the treatment effect or the preference effect.  However, it is possible to design the study for any or all of these effects.  In our example, since prior literature showed that freedom from low back pain was not significantly different between the two groups, we are focused on being able to detect a preference effect and thus will design our study with this as the primary effect of interest.
+</div>
+
+2.	What is the preference for one treatment over the other?
+
+<div style="margin-left: 2em;">
+In order to determine the preference for one treatment over another we do any of the following: rely on prior published literature; conduct a small pilot study and ask participants their preferences for one treatment over another; or make an educated guess based on clinical experience.  According to literature from a clinical trial of medical treatment versus surgical treatment for lower back pain [REF], 26% randomized to medical treatment eventually had surgery.  Therefore, we will use this information to estimate the preference for surgery to be 75% compared to 25% for medical intervention.
+</div>
+
+3.	What difference (effect size) do we want to be able to detect between the two groups?
+
+<div style="margin-left: 2em;">
+Ideally, we would want to determine a meaningful difference based on the scale of interest.  For example, a one point change on the pain scale may be meaningful and therefore, we would use that to help determine sample size for our study.  In order to determine the appropriate effect size, we can use the effect size calculate (see below), and we would need to know 4 estimates: (1) the mean pain score for the surgical intervention in the random arm; (2) the mean pain score for the medical intervention in the random arm; (3) the mean pain score for the surgical intervention in the choice arm; and (4) the mean pain score for the medical intervention in the choice arm. With this information, and the preference rate for one treatment over another, we can calculate the effect size.
+
+However, if we are unsure about the effect size, we can always determine sample size based on standardized effect sizes.  In this case, we could use standards set out by XX [REF] for what is considered small, medium and large effects.
+</div>
+
+4.	What is the variability in our groups?
+
+<div style="margin-left: 2em;">
+In addition to knowing the effect size, we need to know something about the variability of the effect size.  Therefore, it is important to know how much variability we expect in our measure of pain score, and whether or not we expect this to be the same in the two treatment groups.
+
+If a standard effect size is proposed, then the variability would be set at 1.
+</div>
+
+# Stratified Preference Designs
+
+The above design assumes that the preference rate is constant across the entire population.  However, this may not be the case.  In some instances, there may be a variable that we would want to stratify the population based upon.  In the medical versus surgical trial, this may be age.  It may be that younger individuals would have a much higher preference for a surgical intervention compared to a medical intervention then older individuals.  Based on clinical experience, we may hypothesize that the surgical preference rate in the younger population would be 80%, whereas the surgical preference rate in the older population would 65%.  Under this scenario, we would want to implement a stratified design.
+
+The stratified design is explored further in the [Stratified Design Page](stratified-design).
+
 # Design Your Own Trial
 
 - Selection Effect
-    - Power 
-    - [Sample Size](../stratified-sample-calculator)
+    - [Power](../selection-effect-power) 
+    - [Sample Size](../selection-sample-size)
+- [Effect Size Calculator](../effect-size)
+
+
+## Web Applications in Development
+
 - Preference Effect
     - Power 
     - Sample Size
@@ -30,5 +73,6 @@ Figure 1: The two-stage clinical trial design
 - All Three Effects Simultaneously
     - Power 
     - Sample Size
-- Effect Size Calculator
+
+
 
