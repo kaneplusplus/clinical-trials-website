@@ -49,7 +49,7 @@ server <- shinyServer(function(input, output, session) {
     params = get_inputs()
     df <- data.frame(list(
       sample_size = rep(params$sample_size, each=length(params$delta_nu)),
-      delta_nu = rep(params$delta_nu, length(params$delta_nu))))
+      delta_nu = rep(params$delta_nu, length(params$sample_size))))
     power <- rep(NA, nrow(df))
     for (i in 1:nrow(df)) {
       power[i] <- round(selection_power(df$sample_size[i], params$phi,
