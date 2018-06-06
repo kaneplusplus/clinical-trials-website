@@ -58,7 +58,7 @@ The stratified design is explored further in the [Stratified Design Page](strati
 
 - Continuous Outcomes
     - [Power](../selection-effect-power) 
-    - [Sample Size](../selection-sample-size)
+    - [Sample Size](../sample-size)
     - [Effect Size Calculator](../effect-size)
 
 
