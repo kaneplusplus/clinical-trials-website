@@ -1,0 +1,32 @@
+---
+title: "Stratified Sample Size Calculator Report"
+output: word_document
+---
+
+# User-Input Parameters
+
+```{r}
+power <- POWER
+pref_effect <- PREF_EFFECT
+selection_effect <- SELECTION_EFFECT
+treatment_effect <- TREATMENT_EFFECT
+sigma2 <- SIGMA2
+pref_prop <- PREF_PROP
+stratum_prop <- STRATUM_PROP
+alpha <- ALPHA
+```
+
+# Sample Size Visualization
+
+```{r, echo=FALSE}
+library(preference)
+library(ggplot2)
+path_to_df <- "PATH_TO_DF"
+df <- readRDS(path_to_df)
+trial <- pt_from_power(power = power, pref_effect = pref_effect, 
+  selection_effect = selection_effect, treatment_effect = treatment_effect,
+  sigma2 = sigma2, pref_prop = pref_prop, stratum_prop = stratum_prop, 
+  alpha = alpha)
+pt_plot(trial)
+```
+

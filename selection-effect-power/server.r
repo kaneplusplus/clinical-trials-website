@@ -1,4 +1,3 @@
-library(rbokeh)
 library(preference)
 library(ggplot2)
 

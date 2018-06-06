@@ -36,8 +36,6 @@ ui <- shinyUI(pageWithSidebar(
       "top", options(container="list")),
     bsTooltip("delta_nu", "The overall study selection effect.", 
       "top", options(container="list")),
-#    bsTooltip("alpha", "The desired type I error rate.", "top", options(container="list")),
-#    bsTooltip("theta", "The proportion of patients assigned to the choice arm in the initial randomization.", "top", options(container="list")),
     bsTooltip("xi", "The proportion of patients in each stratum. There should be one proportion-value per stratum.", 
       "top", options(container="list")),
     downloadButton('downloadData', 'Download')

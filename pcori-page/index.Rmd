@@ -56,23 +56,15 @@ The stratified design is explored further in the [Stratified Design Page](strati
 
 # Design Your Own Trial
 
-- Selection Effect
+- Continuous Outcomes
     - [Power](../selection-effect-power) 
     - [Sample Size](../selection-sample-size)
-- [Effect Size Calculator](../effect-size)
+    - [Effect Size Calculator](../effect-size)
 
 
 ## Web Applications in Development
 
-- Preference Effect
-    - Power 
-    - Sample Size
-- Treatment Effect
-    - Power 
-    - Sample Size
-- All Three Effects Simultaneously
-    - Power 
-    - Sample Size
-
+- Binary Outcomes
+- Poisson Outcomes
 
 
