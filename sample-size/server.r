@@ -1,6 +1,7 @@
 library(rbokeh)
 library(preference)
 library(ggplot2)
+library(tibble)
 
 source("util.r")
 
@@ -33,10 +34,10 @@ server <- shinyServer(function(input, output, session) {
   # Transform the inputs into the parameters that will go to the
   # pt_from_power function.
   get_inputs <- reactive({
-    list(power = parse_sequence_text(input$power),
-         pref_effect = input$pref_effect,
-         selection_effect = input$selection_effect,
-         treatment_effect = input$treatment_effect,
+    ret <- list(power = input$power,
+         pref_effect = parse_sequence_text(input$pref_effect),
+         selection_effect = parse_sequence_text(input$selection_effect),
+         treatment_effect = parse_sequence_text(input$treatment_effect),
          sigma2 = as.numeric(unlist(strsplit(input$sigma2, ","))),
          pref_prop = as.numeric(unlist(strsplit(input$pref_prop, ","))),
          stratum_prop = as.numeric(unlist(strsplit(input$stratum_prop, ","))),
@@ -61,7 +62,24 @@ server <- shinyServer(function(input, output, session) {
   })
 
   output$line_graph <- renderPlot({
-    pt_plot(get_strat_selection())
+    ss <- get_strat_selection()
+    effect_lengths <- c(length(unique(ss$pref_effect)), 
+                        length(unique(ss$selection_effect)),
+                        length(unique(ss$treatment_effect)))
+    if (sum(effect_lengths > 1) > 1 || sum(effect_lengths) == 3) {
+      error("Visualizations are shown when either preference or",
+            " selection or treatment effects varies.")
+    } else {
+      names(ss)[c(2, 4, 6)] <- c("Preference", "Selection", "Treatment")
+      gather(ss, key = `Sample Size Type`, value = `Sample Size`, 
+             c("pref_ss", "selection_ss", "treatment_ss")) %>% 
+        as_tibble %>% 
+        gather(key = `Effect Type`, value = `Effect Size`, 
+               c("Preference", "Selection", "Treatment")) %>%
+        ggplot(aes(y = `Effect Size`, x = `Sample Size`, group = `Effect Type`,
+                   color = `Effect Type`)) + geom_line() + theme_minimal()
+    }
+#    pt_plot(get_strat_selection())
   })
 
   output$downloadData <- downloadHandler(

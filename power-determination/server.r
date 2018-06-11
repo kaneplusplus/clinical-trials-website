@@ -1,5 +1,7 @@
 library(preference)
 library(ggplot2)
+library(tidyr)
+library(tibble)
 
 source("util.r")
 
@@ -30,34 +32,29 @@ parse_sequence_text = function(x) {
 server <- shinyServer(function(input, output, session) {
 
   get_inputs = reactive({
-    delta_pi = parse_sequence_text(input$delta_pi)
-    delta_nu = parse_sequence_text(input$delta_nu)
-    sample_size = parse_sequence_text(input$sample_size)
-    # Turn the text inputs into vectors of numeric values.
-    phi = as.numeric(gsub(" ", "", unlist(strsplit(input$phi, ","))))
-    sigma2 = as.numeric(gsub(" ", "", unlist(strsplit(input$sigma2, ","))))
-    xi = as.numeric(gsub(" ", "", unlist(strsplit(input$xi, ","))))
-    nr = length(delta_pi) * length(delta_nu)
-
-    list(sample_size=sample_size, phi=phi, sigma2=sigma2, 
-         delta_pi=delta_pi, delta_nu=delta_nu, alpha=input$alpha, 
-         theta=input$theta, xi=xi, num_strata=input$num_strata)
+    list(
+      sample_size = parse_sequence_text(input$sample_size),
+      pref_effect = input$pref_effect,
+      selection_effect = input$selection_effect,
+      treatment_effect = input$treatment_effect,
+      sigma2 = as.numeric(unlist(strsplit(input$sigma2, ","))),
+      pref_prop = as.numeric(unlist(strsplit(input$pref_prop, ","))),
+      choice_prop = as.numeric(unlist(strsplit(input$choice_prop, ","))),
+      stratum_prop = as.numeric(unlist(strsplit(input$stratum_prop, ","))),
+      alpha = input$alpha)
   })
 
   get_power = reactive({ 
     params = get_inputs()
-    df <- data.frame(list(
-      sample_size = rep(params$sample_size, each=length(params$delta_nu)),
-      delta_nu = rep(params$delta_nu, length(params$sample_size))))
-    power <- rep(NA, nrow(df))
-    for (i in 1:nrow(df)) {
-      power[i] <- round(selection_power(df$sample_size[i], params$phi,
-        params$sigma2, params$delta_pi, df$delta_nu[i], params$alpha,
-        params$theta, params$xi, params$num_strata), digits=3)
-    }
-    df$power <- power
-    names(df) = c("Sample Size", "Selection Effect", "Power")
-    df
+    pt_from_ss(ss = params$sample_size, 
+               pref_effect = params$pref_effect,
+               selection_effect = params$selection_effect,
+               treatment_effect = params$treatment_effect,
+               sigma2 = params$sigma2,
+               pref_prop = params$pref_prop,
+               choice_prop = params$choice_prop,
+               stratum_prop = params$stratum_prop,
+               alpha = params$alpha)
   })
 
   output$sample_size = renderDataTable({
@@ -65,11 +62,17 @@ server <- shinyServer(function(input, output, session) {
   })
 
   output$line_graph = renderPlot({
-    params = get_inputs()
-    df = get_power()
-    df[,1] <- factor(df[, 1])
-    ggplot(df, aes(x=`Selection Effect`, y=Power, group=`Sample Size`,
-      color=`Sample Size`)) + geom_line()
+    df <- get_power()
+    if (nrow(df) < 2) {
+      NULL
+    } else {
+      dfs <- df[,c(1, 13:15)] %>% as_tibble
+      names(dfs) <- c("Sample Size", "Treatment", "Selection", "Preference")
+      gather(dfs, key = "Type", value = "Power", 2:4) %>%
+        ggplot(aes(x = `Sample Size`, y = Power, group = Type, color = Type)) +
+        geom_line() + theme_minimal()
+  
+    }
   })
 
   output$downloadData = downloadHandler(
