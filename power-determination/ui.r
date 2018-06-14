@@ -6,7 +6,7 @@ library(ggplot2)
 ui <- shinyUI(pageWithSidebar(
   
   # Application title
-  headerPanel("Selection-Effect Power Calculator"),
+  headerPanel("Power Calculator"),
 
   # Need to add tooltips for descriptions of inputs.
 

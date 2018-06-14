@@ -2,6 +2,7 @@ library(rbokeh)
 library(preference)
 library(ggplot2)
 library(tibble)
+library(tidyr)
 
 source("util.r")
 
@@ -46,7 +47,7 @@ server <- shinyServer(function(input, output, session) {
 
   get_strat_selection <- reactive({ 
     params <- get_inputs()
-    preference::pt_from_power(
+    pt_from_power(
       power = params$power,
       pref_effect = params$pref_effect,
       selection_effect = params$selection_effect,
@@ -67,17 +68,27 @@ server <- shinyServer(function(input, output, session) {
                         length(unique(ss$selection_effect)),
                         length(unique(ss$treatment_effect)))
     if (sum(effect_lengths > 1) > 1 || sum(effect_lengths) == 3) {
-      error("Visualizations are shown when either preference or",
+      stop("Visualizations are shown when either preference or",
             " selection or treatment effects varies.")
     } else {
-      names(ss)[c(2, 4, 6)] <- c("Preference", "Selection", "Treatment")
-      gather(ss, key = `Sample Size Type`, value = `Sample Size`, 
-             c("pref_ss", "selection_ss", "treatment_ss")) %>% 
-        as_tibble %>% 
-        gather(key = `Effect Type`, value = `Effect Size`, 
-               c("Preference", "Selection", "Treatment")) %>%
-        ggplot(aes(y = `Effect Size`, x = `Sample Size`, group = `Effect Type`,
-                   color = `Effect Type`)) + geom_line() + theme_minimal()
+      if ( !all(ss$pref_effect == ss$pref_effect[1]) ) {
+        x <- ss[, c("pref_ss", "pref_effect")]
+        names(x) <- c("Sample Size", "Effect")
+        x$Type <- "Preference"
+      } else if ( !all(ss$selection_effect == ss$selection_effect[1]) ) {
+        x <- ss[, c("selection_ss", "selection_effect")]
+        names(x) <- c("Sample Size", "Effect")
+        x$Type <- "Selection"
+      } else {
+        x <- ss[, c("treatment_ss", "treatment_effect")]
+        names(x) <- c("Sample Size", "Effect")
+        x$Type <- "Treatment"
+      }
+      #x <- rbind(pref, selection, treatment)
+      ggplot(x, aes(y = `Sample Size`, x = Effect, group = Type,
+                    color = Type)) + geom_line() + theme_minimal()
+#        ggplot(aes(y = `Effect Size`, x = `Sample Size`, group = `Effect Type`,
+#                   color = `Effect Type`)) + geom_line() + theme_minimal()
     }
 #    pt_plot(get_strat_selection())
   })
@@ -96,7 +107,6 @@ server <- shinyServer(function(input, output, session) {
       df_dest <- "preference-sample-size.dput"
       saveRDS(df, file=df_dest)
       report_dest <- "preference-sample-size-report.docx"
-      browser()
       rmd_content <- create_strat_selection_report(doc_template, params, 
                                                    df_dest)
       tf <- paste0(tempfile(), ".rmd")

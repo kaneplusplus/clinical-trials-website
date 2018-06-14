@@ -1,5 +1,4 @@
 library(preference)
-library(trelliscopejs)
 library(foreach)
 library(tidyverse)
 

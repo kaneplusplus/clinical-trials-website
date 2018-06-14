@@ -27,6 +27,5 @@ trial <- pt_from_power(power = power, pref_effect = pref_effect,
   selection_effect = selection_effect, treatment_effect = treatment_effect,
   sigma2 = sigma2, pref_prop = pref_prop, stratum_prop = stratum_prop, 
   alpha = alpha)
-pt_plot(trial)
 ```
 

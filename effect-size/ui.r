@@ -1,7 +1,6 @@
 library(shiny)
 library(shinyBS)
 library(ggplot2)
-library(trelliscopejs)
 
 # Define UI for application that draws a histogram
 ui <- shinyUI(pageWithSidebar(
@@ -15,15 +14,15 @@ ui <- shinyUI(pageWithSidebar(
    
   # Sidebar with a slider input for number of bins 
   sidebarPanel(
-    textInput("mu1", "Random Arm Treatment 1 Mean Response:", 
+    textInput("mu1", "Random Arm Treatment 1 Mean Response (mu1):", 
       value="2 to 10"),
-    textInput("mu2", "Random Arm Treatment 2 Mean Response:", 
+    textInput("mu2", "Random Arm Treatment 2 Mean Response (mu2):", 
       value="2"),
-    textInput("mu11", "Choice Arm Treatment 1 Mean Response:", 
+    textInput("mu11", "Choice Arm Treatment 1 Mean Response (mu11):", 
       value="2"),
-    textInput("mu22", "Choice Arm Treatment 2 Mean Response:", 
+    textInput("mu22", "Choice Arm Treatment 2 Mean Response (mu22):", 
       value="2"),
-    textInput("phi", "Proportion of Patients Preferring Treatment 1:",
+    textInput("phi", "Proportion of Patients Preferring Treatment 1 (phi):",
       value="0.4 to 0.6 by 0.1"),
     bsTooltip("mu1", "The mean response of the patients receiving treatment 1 in the random arm"),
     bsTooltip("mu2", "The mean response of the patients receiving treatment 2 in the random arm"),

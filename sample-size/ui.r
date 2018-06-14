@@ -6,7 +6,7 @@ library(ggplot2)
 ui <- shinyUI(pageWithSidebar(
   
   # Application title
-  headerPanel("Preference Sample-Size Calculator"),
+  headerPanel("Sample-Size Calculator"),
 
   # Need to add tooltips for descriptions of inputs.
 
@@ -22,13 +22,13 @@ ui <- shinyUI(pageWithSidebar(
     numericInput("power", "Power:", value = 0.8, min = 0.1, max = 0.99, 
                  step = 0.01),
     bsTooltip("power", "The study power."),
-    textInput("pref_effect", "Preference Effect", value = "-11 to 3 by 0.1"),
+    textInput("pref_effect", "Preference Effect", value = ".5 to 10 by 0.5"),
     bsTooltip("pref_effect", "The overall study preference effect.", 
               "top", options(container="list")),
     textInput("selection_effect", "Selection Effect", value = "3"),
     bsTooltip("selection_effect", "The overall study selection effect.", 
               "top", options(container="list")),
-    numericInput("treatment_effect", "Treatment Effect", value = "3"),
+    textInput("treatment_effect", "Treatment Effect", value = "3"),
     bsTooltip("treatment_effect", "The effect size of the treatment arm.", 
               "top", options(container="list")),
     textInput("sigma2", "Within-Stratum Variances:", value="1"),
