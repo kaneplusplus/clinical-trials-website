@@ -16,5 +16,6 @@ create_effect_size_report <- function(doc_template, params) {
     str_replace_all("MU22", cond_to_string(params$mu22)) %>%
     str_replace_all("MU1", cond_to_string(params$mu1)) %>%
     str_replace_all("MU2", cond_to_string(params$mu2)) %>%
-    str_replace_all("PHI", cond_to_string(params$phi)) 
+    str_replace_all("PHI", cond_to_string(params$phi)) %>%
+    str_replace_all("NSTRATA", cond_to_string(params$nstrat)) 
 }

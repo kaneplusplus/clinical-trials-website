@@ -33,12 +33,13 @@ parse_sequence_text = function(x) {
 server <- shinyServer(function(input, output, session) {
 
   get_inputs = reactive({
-    mu1 = parse_sequence_text(input$mu1)
-    mu2 = parse_sequence_text(input$mu2)
-    mu11 = parse_sequence_text(input$mu11)
-    mu22 = parse_sequence_text(input$mu22)
-    phi = parse_sequence_text(input$phi)
-    list(mu1=mu1, mu2=mu2, mu11=mu11, mu22=mu22, phi=phi)
+    mu1 <-  parse_sequence_text(input$mu1)
+    mu2 <- parse_sequence_text(input$mu2)
+    mu11 <- parse_sequence_text(input$mu11)
+    mu22 <- parse_sequence_text(input$mu22)
+    phi <- parse_sequence_text(input$phi)
+    nstrata <- input$nstrata
+    list(mu1=mu1, mu2=mu2, mu11=mu11, mu22=mu22, phi=phi, nstrata=nstrata)
   })
 
   get_effects = reactive({ 
@@ -49,13 +50,14 @@ server <- shinyServer(function(input, output, session) {
       foreach(m11=params$mu11, .combine=rbind) %:% 
       foreach(m22=params$mu22, .combine=rbind) %:% 
       foreach(p=params$phi, .combine=rbind) %do% {
-        effects = effects_from_means(m1, m2, m11, m22, p)
+        effects = effects_from_means(m1, m2, m11, m22, p, params$nstrata)
         c(m1, m2, m11, m22, p, round(effects$treatment, 2), 
-          round(effects$selection, 2), round(effects$preference, 2))
+          round(effects$selection, 2), round(effects$preference, 2), 
+          params$nstrata)
       }
     ret = as.data.frame(ret)
     colnames(ret) = c("mu1", "mu2", "mu11", "mu22", "phi", "treatment",
-      "selection", "preference")
+      "selection", "preference", "nstrata")
     ret
   })
 
@@ -89,11 +91,12 @@ server <- shinyServer(function(input, output, session) {
         foreach(p=phi, .combine=rbind) %do% {
           effects <- effects_from_means(m1, m2, m11, m22, p)
           c(m1, m2, m11, m22, p, round(effects$treatment, 2),
-            round(effects$selection, 2), round(effects$preference, 2))
+            round(effects$selection, 2), round(effects$preference, 2),
+            nstrata)
         }
       effect_size_table <- as.data.frame(effect_size_table)
       colnames(effect_size_table) <- c("mu1", "mu2", "mu11", "mu22", "phi",
-        "treatment", "selection", "preference")
+        "treatment", "selection", "preference", "nstrata")
       write.csv(effect_size_table, table_dest, row.names=FALSE)
 
       ret = zip(zipfile=fname, files=c(report_dest, table_dest))

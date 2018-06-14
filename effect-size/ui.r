@@ -24,11 +24,13 @@ ui <- shinyUI(pageWithSidebar(
       value="2"),
     textInput("phi", "Proportion of Patients Preferring Treatment 1 (phi):",
       value="0.4 to 0.6 by 0.1"),
+    numericInput("nstrata", "The number of strata", 1, min = 1, step = 1),
     bsTooltip("mu1", "The mean response of the patients receiving treatment 1 in the random arm"),
     bsTooltip("mu2", "The mean response of the patients receiving treatment 2 in the random arm"),
     bsTooltip("mu11", "The mean response of the patients receiving treatment 1 in the choice arm"),
     bsTooltip("mu22", "The mean response of the patients receiving treatment 2 in the choice arm."),
     bsTooltip("phi", "The proportion of patients preferring treatment 1."),
+    bsTooltip("nstrata", "The number of strata in the trial."),
     downloadButton('downloadData', 'Download')
   ),
       

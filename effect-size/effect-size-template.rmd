@@ -11,6 +11,7 @@ mu2 <- MU2
 mu11 <- MU11
 mu22 <- MU22
 phi <- PHI
+nstrata <- NSTRATA
 ```
 
 # Effect Size Table Generation
@@ -25,10 +26,11 @@ effect_size_table <- foreach(m1=mu1, .combine=rbind) %:%
   foreach(p=phi, .combine=rbind) %do% {
     effects <- effects_from_means(m1, m2, m11, m22, p)
     c(m1, m2, m11, m22, p, round(effects$treatment, 2),
-      round(effects$selection, 2), round(effects$preference, 2))
+      round(effects$selection, 2), round(effects$preference, 2),
+      nstrata)
   }
 effect_size_table <- as.data.frame(effect_size_table)
 colnames(effect_size_table) <- c("mu1", "mu2", "mu11", "mu22", "phi", 
-  "treatment", "selection", "preference")
+  "treatment", "selection", "preference", "nstrata")
 write.csv(effect_size_table, "effect-sizes.csv", row.names=FALSE)
 ```
