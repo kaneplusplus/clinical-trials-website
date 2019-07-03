@@ -1,6 +1,5 @@
 ---
 title: "Yale-PCORI Clinical Trial Preference Design"
-runtime: shiny
 output: 
   html_document:
     toc: true
